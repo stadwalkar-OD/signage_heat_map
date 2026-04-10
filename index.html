@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pre-Reno Sign Traker</title>
+  <title>Pre-Reno Sign Tracker</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -246,6 +246,8 @@
 
 <div class="main">
 
+  <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;line-height:1.6;">This map shows Opendoor homes currently in pre-renovation across your markets. Each circle represents active zip codes where sign install requests are likely to be submitted soon. Use this to forecast upcoming demand in your region.</p>
+
   <div class="config-notice" id="config-notice">
     Set <code>SHEETS_CSV_URL</code> at the top of the script to wire up live Snowflake data.
     Showing sample data until then.
@@ -281,10 +283,7 @@
 
   <div class="legend">
     <span>Circle size = home count</span>
-    <span class="legend-item">
-      <svg width="10" height="10"><circle id="leg-c" cx="5" cy="5" r="4" fill="#1D9E75" fill-opacity=".75" stroke="#0F6E56" stroke-width="1"/></svg>
-      <span id="leg-label">Pre-reno</span>
-    </span>
+
 
   </div>
 
