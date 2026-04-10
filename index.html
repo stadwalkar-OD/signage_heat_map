@@ -545,7 +545,7 @@ Promise.all([
     .attr('stroke', '#d0d5dd')
     .attr('stroke-width', 0.4);
 
-  // State borders
+  // State borders 
   svg.append('path')
     .datum(topojson.mesh(us, us.objects.states, (a, b) => a !== b))
     .attr('d', path).attr('fill', 'none')
