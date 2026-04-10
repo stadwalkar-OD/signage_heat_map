@@ -181,6 +181,57 @@
       .stats-row { grid-template-columns: repeat(2, 1fr); }
       header { padding: 12px 16px; }
     }
+
+    /* ── Tables ── */
+    .tables-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .table-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .table-title {
+      font-size: 13px;
+      font-weight: 600;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+    .table-scroll { max-height: 320px; overflow-y: auto; }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .data-table thead th {
+      position: sticky; top: 0;
+      background: var(--bg);
+      text-align: left;
+      padding: 8px 16px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      border-bottom: 1px solid var(--border);
+    }
+    .data-table tbody td {
+      padding: 7px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+    .data-table tbody tr:hover td { background: var(--bg); }
+    .data-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    @media (max-width: 640px) {
+      .tables-row { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -247,6 +298,28 @@
   </div>
 
   <div class="footer" id="footer"></div>
+
+  <div class="tables-row">
+    <div class="table-card">
+      <div class="table-title">State, Market, and Postal Code</div>
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead><tr><th>State</th><th>Market</th><th>Postal Code</th></tr></thead>
+          <tbody id="tbl-zips"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="table-card">
+      <div class="table-title">Count of Postal Codes by State</div>
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead><tr><th>State</th><th class="num">Postal Codes</th></tr></thead>
+          <tbody id="tbl-states"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
@@ -406,6 +479,25 @@ function colorStates() {
   });
 }
 
+// ─── RENDER TABLES ───────────────────────────────────────────────────────────
+function renderTables() {
+  const f = getFiltered();
+
+  // Table 1: zip level sorted by state then zip
+  const sorted = [...f].sort((a, b) => a.state.localeCompare(b.state) || a.zip.localeCompare(b.zip));
+  document.getElementById('tbl-zips').innerHTML = sorted.map(d =>
+    `<tr><td>${d.state}</td><td>${d.market}</td><td>${d.zip}</td></tr>`
+  ).join('');
+
+  // Table 2: count of zips by state
+  const byState = {};
+  f.forEach(d => { byState[d.state] = (byState[d.state] || 0) + 1; });
+  const stateRows = Object.entries(byState).sort((a, b) => a[0].localeCompare(b[0]));
+  document.getElementById('tbl-states').innerHTML = stateRows.map(([state, cnt]) =>
+    `<tr><td>${state}</td><td class="num">${cnt}</td></tr>`
+  ).join('');
+}
+
 // ─── RENDER CIRCLES ───────────────────────────────────────────────────────────
 function render() {
   svg.selectAll('.zc').remove();
@@ -448,6 +540,7 @@ function render() {
       .on('mouseout', () => tip.style.display = 'none');
   });
   updateStats();
+  renderTables();
 }
 
 // ─── PILLS ────────────────────────────────────────────────────────────────────
