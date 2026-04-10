@@ -93,7 +93,7 @@
     /* ── Stats ── */
     .stats-row {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 10px; margin-bottom: 14px;
     }
     .stat-card {
@@ -189,7 +189,7 @@
 
 <header>
   <div>
-    <div class="header-title">Pre-Reno Sign Tracker</div>
+    <div class="header-title" id="header-title">Pre-Reno Sign Tracker</div>
     <div class="header-sub">Opendoor expansion markets &mdash; zip-level heatmap</div>
   </div>
   <span class="badge" id="last-updated">Loading&hellip;</span>
@@ -207,10 +207,7 @@
       <button class="tab-btn" id="tab-usd" onclick="switchTab('usd')">Up Sign Down states</button>
       <button class="tab-btn" id="tab-st"  onclick="switchTab('st')">Sign Tracker states</button>
     </div>
-    <label class="flag-label">
-      <input type="checkbox" id="flagOnly"/>
-      COE alerts only (&le;7 days, no sign-down)
-    </label>
+
   </div>
 
   <div class="stats-row">
@@ -218,10 +215,7 @@
       <div class="stat-label">Pre-reno homes</div>
       <div class="stat-value" id="s1" style="color:var(--teal-dark)">—</div>
     </div>
-    <div class="stat-card">
-      <div class="stat-label">COE alerts</div>
-      <div class="stat-value danger" id="s2">—</div>
-    </div>
+
     <div class="stat-card">
       <div class="stat-label">Markets</div>
       <div class="stat-value" id="s3">—</div>
@@ -242,10 +236,7 @@
       <svg width="10" height="10"><circle id="leg-c" cx="5" cy="5" r="4" fill="#1D9E75" fill-opacity=".75" stroke="#0F6E56" stroke-width="1"/></svg>
       <span id="leg-label">Pre-reno</span>
     </span>
-    <span class="legend-item">
-      <svg width="10" height="10"><circle cx="5" cy="5" r="4" fill="#E24B4A" fill-opacity=".75" stroke="#A32D2D" stroke-width="1"/></svg>
-      COE &le;7 days, no sign-down
-    </span>
+
   </div>
 
   <div class="map-wrap">
@@ -302,7 +293,6 @@ let DATA          = [];
 const locked      = _params.get('locked') === 'true';
 let activeTab     = _params.get('tab') || 'usd';
 let activeMarkets = new Set();
-let flagOnly      = false;
 
 if (locked) document.getElementById('top-row').style.display = 'none';
 
@@ -396,14 +386,13 @@ function getSampleData() {
 function cr(count) { return Math.max(6, Math.sqrt(count) * 4.5); }
 function getTabData() { return DATA.filter(d => d.workflow === activeTab); }
 function getFiltered() {
-  return getTabData().filter(d => activeMarkets.has(d.market) && (!flagOnly || d.flagged > 0));
+  return getTabData().filter(d => activeMarkets.has(d.market));
 }
 
 // ─── STATS ────────────────────────────────────────────────────────────────────
 function updateStats() {
   const f = getFiltered();
   document.getElementById('s1').textContent = f.reduce((a, d) => a + d.count, 0);
-  document.getElementById('s2').textContent = f.filter(d => d.flagged > 0).length;
   document.getElementById('s3').textContent = new Set(f.map(d => d.market)).size;
   document.getElementById('s4').textContent = f.length;
   document.getElementById('s1').style.color = COLORS[activeTab].statColor;
@@ -430,9 +419,8 @@ function render() {
   f.forEach(d => {
     const pt = proj([d.lon, d.lat]);
     if (!pt) return;
-    const fl     = d.flagged > 0;
-    const fill   = fl ? '#E24B4A' : c.fill;
-    const stroke = fl ? '#A32D2D' : c.stroke;
+    const fill   = c.fill;
+    const stroke = c.stroke;
 
     svg.append('circle')
       .attr('class', 'zc')
@@ -457,12 +445,7 @@ function render() {
             <span class="tip-label">Pre-reno homes</span>
             <span style="font-weight:600;color:${c.stroke}">${d.count}</span>
           </div>
-          <div class="tip-row">
-            <span class="tip-label">COE alerts</span>
-            <span style="font-weight:600;${d.flagged > 0 ? 'color:#A32D2D' : ''}">
-              ${d.flagged > 0 ? d.flagged + ' flagged' : '—'}
-            </span>
-          </div>`;
+`;
       })
       .on('mouseout', () => tip.style.display = 'none');
   });
@@ -506,6 +489,9 @@ function switchTab(tab) {
   document.getElementById('leg-c').setAttribute('fill',   c.fill);
   document.getElementById('leg-c').setAttribute('stroke', c.stroke);
   document.getElementById('leg-label').textContent = tab === 'usd' ? 'Up Sign Down state' : 'Sign Tracker state';
+  const titleText = tab === 'usd' ? 'Up Sign Down — Pre-Reno Sign Tracker' : 'Sign Tracker — Pre-Reno Sign Tracker';
+  document.getElementById('header-title').textContent = titleText;
+  document.title = titleText;
   document.getElementById('s1').style.color = c.statColor;
 
   // Persist tab in URL for sharable deep links
@@ -519,11 +505,6 @@ function switchTab(tab) {
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
-document.getElementById('flagOnly').onchange = e => {
-  flagOnly = e.target.checked;
-  render();
-};
-
 Promise.all([
   loadData(),
   d3.json('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json')
@@ -545,7 +526,7 @@ Promise.all([
     .attr('stroke', '#d0d5dd')
     .attr('stroke-width', 0.4);
 
-  // State borders 
+  // State borders
   svg.append('path')
     .datum(topojson.mesh(us, us.objects.states, (a, b) => a !== b))
     .attr('d', path).attr('fill', 'none')
