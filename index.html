@@ -238,7 +238,7 @@
 
 <header>
   <div>
-    <div class="header-title" id="header-title">Pre-Reno Sign Tracker</div>
+    <div class="header-title" id="header-title">Pre-Reno Sign Traker</div>
     <div class="header-sub">Opendoor expansion markets &mdash; zip-level heatmap</div>
   </div>
   <span class="badge" id="last-updated">Loading&hellip;</span>
@@ -254,7 +254,7 @@
   <div class="top-row" id="top-row">
     <div class="tabs">
       <button class="tab-btn" id="tab-usd" onclick="switchTab('usd')">Up Sign Down states</button>
-      <button class="tab-btn" id="tab-st"  onclick="switchTab('st')">Sign Tracker states</button>
+      <button class="tab-btn" id="tab-st"  onclick="switchTab('st')">Sign Traker states</button>
     </div>
 
   </div>
@@ -530,7 +530,7 @@ function render() {
         tip.style.top  = ty + 'px';
         tip.innerHTML = `
           <div class="tip-zip">${d.zip}</div>
-          <div class="tip-market">${d.market}, ${d.state} &mdash; ${activeTab === 'usd' ? 'Up Sign Down' : 'Sign Tracker'}</div>
+          <div class="tip-market">${d.market}, ${d.state} &mdash; ${activeTab === 'usd' ? 'Up Sign Down' : 'Sign Traker'}</div>
           <div class="tip-row">
             <span class="tip-label">Pre-reno homes</span>
             <span style="font-weight:600;color:${c.stroke}">${d.count}</span>
@@ -579,8 +579,8 @@ function switchTab(tab) {
 
   document.getElementById('leg-c').setAttribute('fill',   c.fill);
   document.getElementById('leg-c').setAttribute('stroke', c.stroke);
-  document.getElementById('leg-label').textContent = tab === 'usd' ? 'Up Sign Down state' : 'Sign Tracker state';
-  const titleText = tab === 'usd' ? 'Up Sign Down — Pre-Reno Sign Tracker' : 'Sign Tracker — Pre-Reno Sign Tracker';
+  document.getElementById('leg-label').textContent = tab === 'usd' ? 'Up Sign Down state' : 'Sign Traker state';
+  const titleText = tab === 'usd' ? 'Up Sign Down — Pre-Reno Sign Tracker' : 'Sign Tracker — Pre-Reno Sign Traker';
   document.getElementById('header-title').textContent = titleText;
   document.title = titleText;
   document.getElementById('s1').style.color = c.statColor;
