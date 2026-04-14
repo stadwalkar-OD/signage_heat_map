@@ -3,242 +3,63 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pre-Reno Sign Traker</title>
+  <title>Up Sign Down — Pre-Reno Sign Tracker</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg: #f7f8fa;
-      --surface: #ffffff;
-      --border: #e4e7ec;
-      --border-strong: #c9d0db;
-      --text: #101828;
-      --text-muted: #667085;
-      --text-light: #98a2b3;
-      --teal: #1D9E75;
-      --teal-dark: #0F6E56;
-      --teal-light: #E1F5EE;
-      --purple: #7F77DD;
-      --purple-dark: #534AB7;
-      --purple-light: #EEEDFE;
-      --red: #E24B4A;
-      --red-dark: #A32D2D;
-      --radius: 8px;
-      --radius-lg: 12px;
+      --bg: #f7f8fa; --surface: #ffffff; --border: #e4e7ec; --border-strong: #c9d0db;
+      --text: #101828; --text-muted: #667085; --text-light: #98a2b3;
+      --teal: #1D9E75; --teal-dark: #0F6E56;
+      --radius: 8px; --radius-lg: 12px;
       --shadow: 0 1px 3px rgba(16,24,40,.08), 0 1px 2px rgba(16,24,40,.04);
       --shadow-md: 0 4px 12px rgba(16,24,40,.10);
     }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      font-size: 14px;
-      line-height: 1.5;
-      min-height: 100vh;
-    }
-
-    /* ── Header ── */
-    header {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 14px 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+    header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
     .header-title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
     .header-sub { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
-    .badge {
-      font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500;
-      background: #ECFDF5; color: #065F46; border: 1px solid #A7F3D0;
-    }
+    .badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500; background: #ECFDF5; color: #065F46; border: 1px solid #A7F3D0; }
     .badge.stale { background: #FFF7ED; color: #92400E; border-color: #FED7AA; }
-
-    /* ── Main ── */
     .main { padding: 20px 28px; max-width: 1240px; margin: 0 auto; }
-
-    /* ── Config notice ── */
-    .config-notice {
-      background: #FFF7ED; border: 1px solid #FED7AA;
-      border-radius: var(--radius); padding: 10px 14px;
-      font-size: 12px; color: #92400E; margin-bottom: 16px;
-      display: none;
-    }
-    .config-notice code { background: rgba(0,0,0,.07); padding: 1px 5px; border-radius: 4px; font-size: 11px; }
-
-    /* ── Tabs ── */
-    .top-row {
-      display: flex; align-items: center;
-      justify-content: space-between; flex-wrap: wrap;
-      gap: 10px; margin-bottom: 16px;
-    }
-    .tabs { display: flex; }
-    .tab-btn {
-      padding: 7px 18px; font-size: 13px; font-weight: 500;
-      cursor: pointer; outline: none;
-      border: 1px solid var(--border-strong);
-      background: var(--surface); color: var(--text-muted);
-      transition: all 0.15s;
-    }
-    .tab-btn:first-child { border-radius: var(--radius) 0 0 var(--radius); }
-    .tab-btn:last-child  { border-radius: 0 var(--radius) var(--radius) 0; border-left: none; }
-    .tab-btn.active-usd  { background: var(--teal); border-color: var(--teal); color: #fff; }
-    .tab-btn.active-st   { background: var(--purple); border-color: var(--purple); color: #fff; }
-    .tab-btn:hover:not(.active-usd):not(.active-st) { background: var(--bg); }
-
-    /* ── Stats ── */
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px; margin-bottom: 14px;
-    }
-    .stat-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 13px 16px;
-      box-shadow: var(--shadow);
-    }
+    .stats-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 14px; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 13px 16px; box-shadow: var(--shadow); }
     .stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 5px; }
-    .stat-value { font-size: 26px; font-weight: 600; line-height: 1; }
-    .stat-value.danger { color: var(--red-dark); }
-
-    /* ── Controls ── */
+    .stat-value { font-size: 26px; font-weight: 600; line-height: 1; color: var(--teal-dark); }
     .controls { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
-    .pills { display: flex; flex-wrap: wrap; gap: 5px; flex: 1; }
-    .pill {
-      display: inline-flex; align-items: center;
-      padding: 3px 10px; border-radius: 20px; font-size: 12px;
-      cursor: pointer; user-select: none;
-      border: 1px solid var(--border-strong);
-      background: var(--surface); color: var(--text-muted);
-      transition: all 0.15s;
-    }
-    .pill.on-usd { background: var(--teal); border-color: var(--teal); color: #fff; }
-    .pill.on-st  { background: var(--purple); border-color: var(--purple); color: #fff; }
-
-    .flag-label {
-      display: flex; align-items: center; gap: 6px;
-      font-size: 12px; color: var(--text-muted);
-      cursor: pointer; white-space: nowrap;
-    }
-    .flag-label input { accent-color: var(--red); width: 13px; height: 13px; }
-
-    /* ── Legend ── */
-    .legend {
-      display: flex; align-items: center; gap: 14px;
-      font-size: 12px; color: var(--text-muted); margin-bottom: 10px;
-    }
-    .legend-item { display: flex; align-items: center; gap: 5px; }
-
-    /* ── Map ── */
-    .map-wrap {
-      border: 1px solid var(--border); border-radius: var(--radius-lg);
-      overflow: hidden; background: var(--surface);
-      position: relative; box-shadow: var(--shadow);
-    }
+    .pills { display: flex; flex-wrap: wrap; gap: 5px; }
+    .pill { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 12px; cursor: pointer; user-select: none; border: 1px solid var(--border-strong); background: var(--surface); color: var(--text-muted); transition: all 0.15s; }
+    .pill.on { background: var(--teal); border-color: var(--teal); color: #fff; }
+    .legend { display: flex; align-items: center; gap: 14px; font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+    .map-wrap { border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; background: var(--surface); position: relative; box-shadow: var(--shadow); }
     #map { display: none; width: 100%; }
-
-    /* ── States coloring ── */
-    .state-path-usd, .state-path-st, .state-path-off { fill: #f0f2f5; }
-
-    /* ── Tooltip ── */
-    #tooltip {
-      display: none; position: absolute;
-      background: var(--surface);
-      border: 1px solid var(--border-strong);
-      border-radius: var(--radius); padding: 11px 14px;
-      font-size: 13px; pointer-events: none;
-      z-index: 10; min-width: 210px;
-      box-shadow: var(--shadow-md);
-    }
+    .state-path { fill: #f0f2f5; }
+    #tooltip { display: none; position: absolute; background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius); padding: 11px 14px; font-size: 13px; pointer-events: none; z-index: 10; min-width: 210px; box-shadow: var(--shadow-md); }
     .tip-zip { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
     .tip-market { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
     .tip-row { display: flex; justify-content: space-between; gap: 16px; padding: 4px 0; border-top: 1px solid var(--border); }
     .tip-label { color: var(--text-muted); }
-
-    /* ── Loading / Error ── */
-    .loading {
-      display: flex; align-items: center; justify-content: center;
-      height: 340px; flex-direction: column; gap: 12px;
-      color: var(--text-muted); font-size: 13px;
-    }
-    .spinner {
-      width: 24px; height: 24px;
-      border: 2px solid var(--border);
-      border-top-color: var(--teal);
-      border-radius: 50%;
-      animation: spin .8s linear infinite;
-    }
+    .loading { display: flex; align-items: center; justify-content: center; height: 340px; flex-direction: column; gap: 12px; color: var(--text-muted); font-size: 13px; }
+    .spinner { width: 24px; height: 24px; border: 2px solid var(--border); border-top-color: var(--teal); border-radius: 50%; animation: spin .8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
     .footer { font-size: 11px; color: var(--text-light); margin-top: 8px; text-align: right; }
-
-    @media (max-width: 640px) {
-      .main { padding: 14px 16px; }
-      .stats-row { grid-template-columns: repeat(2, 1fr); }
-      header { padding: 12px 16px; }
-    }
-
-    /* ── Tables ── */
-    .tables-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-top: 16px;
-    }
-    .table-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .table-title {
-      font-size: 13px;
-      font-weight: 600;
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border);
-      color: var(--text);
-    }
+    .tables-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+    .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+    .table-title { font-size: 13px; font-weight: 600; padding: 12px 16px; border-bottom: 1px solid var(--border); color: var(--text); }
     .table-scroll { max-height: 320px; overflow-y: auto; }
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-    }
-    .data-table thead th {
-      position: sticky; top: 0;
-      background: var(--bg);
-      text-align: left;
-      padding: 8px 16px;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: .04em;
-      border-bottom: 1px solid var(--border);
-    }
-    .data-table tbody td {
-      padding: 7px 16px;
-      border-bottom: 1px solid var(--border);
-      color: var(--text);
-    }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .data-table thead th { position: sticky; top: 0; background: var(--bg); text-align: left; padding: 8px 16px; font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .04em; border-bottom: 1px solid var(--border); }
+    .data-table tbody td { padding: 7px 16px; border-bottom: 1px solid var(--border); color: var(--text); }
     .data-table tbody tr:last-child td { border-bottom: none; }
     .data-table tbody tr:hover td { background: var(--bg); }
     .data-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
-    @media (max-width: 640px) {
-      .tables-row { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 640px) { .main { padding: 14px 16px; } .stats-row { grid-template-columns: repeat(2, 1fr); } .tables-row { grid-template-columns: 1fr; } header { padding: 12px 16px; } }
   </style>
 </head>
 <body>
 
 <header>
   <div>
-    <div class="header-title" id="header-title">Pre-Reno Sign Traker</div>
+    <div class="header-title">Up Sign Down &mdash; Pre-Reno Sign Tracker</div>
     <div class="header-sub">Opendoor expansion markets &mdash; zip-level heatmap</div>
   </div>
   <span class="badge" id="last-updated">Loading&hellip;</span>
@@ -246,53 +67,21 @@
 
 <div class="main">
   <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;line-height:1.6;">This map shows Opendoor homes currently in pre-renovation across your markets. Each circle represents active zip codes where sign install requests are likely to be submitted soon. Use this to forecast upcoming demand in your region.</p>
-  <div class="config-notice" id="config-notice">
-    Set <code>SHEETS_CSV_URL</code> at the top of the script to wire up live Snowflake data.
-    Showing sample data until then.
-  </div>
-
-  <div class="top-row" id="top-row">
-    <div class="tabs">
-      <button class="tab-btn" id="tab-usd" onclick="switchTab('usd')">Up Sign Down states</button>
-      <button class="tab-btn" id="tab-st"  onclick="switchTab('st')">Sign Traker states</button>
-    </div>
-
-  </div>
 
   <div class="stats-row">
-    <div class="stat-card">
-      <div class="stat-label">Pre-reno homes</div>
-      <div class="stat-value" id="s1" style="color:var(--teal-dark)">—</div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-label">Markets</div>
-      <div class="stat-value" id="s3">—</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Active zips</div>
-      <div class="stat-value" id="s4">—</div>
-    </div>
+    <div class="stat-card"><div class="stat-label">Pre-reno homes</div><div class="stat-value" id="s1">—</div></div>
+    <div class="stat-card"><div class="stat-label">Markets</div><div class="stat-value" id="s3">—</div></div>
+    <div class="stat-card"><div class="stat-label">Active zips</div><div class="stat-value" id="s4">—</div></div>
   </div>
 
   <div class="controls">
     <div class="pills" id="pills"></div>
   </div>
 
-  <div class="legend">
-    <span>Circle size = home count</span>
-    <span class="legend-item">
-      <svg width="10" height="10"><circle id="leg-c" cx="5" cy="5" r="4" fill="#1D9E75" fill-opacity=".75" stroke="#0F6E56" stroke-width="1"/></svg>
-      <span id="leg-label">Pre-reno</span>
-    </span>
-
-  </div>
+  <div class="legend"><span>Circle size = home count</span></div>
 
   <div class="map-wrap">
-    <div id="map-loading" class="loading">
-      <div class="spinner"></div>
-      <span>Loading map&hellip;</span>
-    </div>
+    <div id="map-loading" class="loading"><div class="spinner"></div><span>Loading map&hellip;</span></div>
     <svg id="map" viewBox="0 0 960 540"></svg>
     <div id="tooltip"></div>
   </div>
@@ -319,82 +108,36 @@
       </div>
     </div>
   </div>
-
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
 <script>
-// ─── CONFIG ───────────────────────────────────────────────────────────────────
-// 1. Publish your Google Sheet: File → Share → Publish to web → Sheet1 → CSV
-// 2. Paste the published URL below.
-// Expected columns: zip, market, state, lat, lon, count, flagged
 const SHEETS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLTSFFIYKPDusPUwQ6k6B4oVupvvfwpLGgGROxPwp_ZZypHejNmqcUfehHHruL9Fon7RU7TxZezT2S/pub?output=csv';
 
-// ─── STATE CLASSIFICATION ─────────────────────────────────────────────────────
-const USD_STATES = new Set([
-  'AZ','CA','CO','FL','GA','ID','IL','IN','IA','MI','MN','MS',
-  'MT','NE','NV','NC','ND','OH','OR','SC','SD','TN','TX','UT',
-  'DC','WA','WV','WI','WY'
-]);
-const ST_STATES = new Set([
-  'AL','AR','CT','DE','HI','KS','KY','LA','ME','MD','MA',
-  'MO','NH','NJ','NM','NY','OK','PA','RI','VA','VT'
-]);
-
-// State FIPS → abbr mapping for map coloring
-const FIPS_TO_ABBR = {
-  '01':'AL','02':'AK','04':'AZ','05':'AR','06':'CA','08':'CO','09':'CT','10':'DE',
-  '11':'DC','12':'FL','13':'GA','15':'HI','16':'ID','17':'IL','18':'IN','19':'IA',
-  '20':'KS','21':'KY','22':'LA','23':'ME','24':'MD','25':'MA','26':'MI','27':'MN',
-  '28':'MS','29':'MO','30':'MT','31':'NE','32':'NV','33':'NH','34':'NJ','35':'NM',
-  '36':'NY','37':'NC','38':'ND','39':'OH','40':'OK','41':'OR','42':'PA','44':'RI',
-  '45':'SC','46':'SD','47':'TN','48':'TX','49':'UT','50':'VT','51':'VA','53':'WA',
-  '54':'WV','55':'WI','56':'WY'
-};
-
-const COLORS = {
-  usd: { fill: '#1D9E75', stroke: '#0F6E56', pill: 'on-usd', statColor: '#0F6E56' },
-  st:  { fill: '#7F77DD', stroke: '#534AB7', pill: 'on-st',  statColor: '#534AB7' }
-};
-
-// ─── APP STATE ────────────────────────────────────────────────────────────────
-const _params     = new URLSearchParams(window.location.search);
-let DATA          = [];
-const locked      = _params.get('locked') === 'true';
-let activeTab     = _params.get('tab') || 'usd';
+let DATA = [];
 let activeMarkets = new Set();
-
-if (locked) document.getElementById('top-row').style.display = 'none';
 
 const svg   = d3.select('#map');
 const svgEl = document.getElementById('map');
 const proj  = d3.geoAlbersUsa().scale(1100).translate([480, 270]);
 const tip   = document.getElementById('tooltip');
 
-// ─── DATA FETCH ───────────────────────────────────────────────────────────────
+function cr(count) { return Math.max(6, Math.sqrt(count) * 4.5); }
+function getFiltered() { return DATA.filter(d => activeMarkets.has(d.market)); }
+
 async function loadData() {
-  if (!SHEETS_CSV_URL) {
-    document.getElementById('config-notice').style.display = 'block';
-    DATA = getSampleData();
-    const badge = document.getElementById('last-updated');
-    badge.textContent = 'Sample data';
-    badge.className = 'badge stale';
-    return;
-  }
   try {
     const res  = await fetch(SHEETS_CSV_URL);
     const text = await res.text();
     DATA = d3.csvParse(text, d => ({
-      zip:      d.zip,
-      market:   d.market,
-      state:    (d.state || '').toUpperCase(),
-      lat:      +d.lat,
-      lon:      +d.lon,
-      count:    +d.count || 0,
-      flagged:  +d.flagged || 0,
-      workflow: USD_STATES.has(d.state) ? 'usd' : ST_STATES.has(d.state) ? 'st' : null
-    })).filter(d => d.workflow && d.lat && d.lon && d.count > 0);
+      zip:    d.zip,
+      market: d.market,
+      state:  (d.state || '').trim().toUpperCase(),
+      lat:    +d.lat,
+      lon:    +d.lon,
+      count:  +d.count || 0,
+    })).filter(d => d.lat && d.lon && d.count > 0);
 
     const now = new Date();
     document.getElementById('last-updated').textContent =
@@ -402,122 +145,49 @@ async function loadData() {
     document.getElementById('footer').textContent =
       'Data refreshes daily via Snowflake. Last fetched: ' + now.toLocaleTimeString();
   } catch (err) {
-    DATA = getSampleData();
-    const badge = document.getElementById('last-updated');
-    badge.textContent = 'Fetch failed — sample data';
-    badge.className = 'badge stale';
     console.error('Sheet fetch failed:', err);
+    const badge = document.getElementById('last-updated');
+    badge.textContent = 'Fetch failed';
+    badge.className = 'badge stale';
   }
 }
 
-// ─── SAMPLE DATA ─────────────────────────────────────────────────────────────
-function getSampleData() {
-  return [
-    {zip:'28202',market:'Charlotte',   state:'NC',lat:35.227,lon:-80.843, count:8, flagged:2,workflow:'usd'},
-    {zip:'28203',market:'Charlotte',   state:'NC',lat:35.214,lon:-80.860, count:5, flagged:1,workflow:'usd'},
-    {zip:'28205',market:'Charlotte',   state:'NC',lat:35.220,lon:-80.810, count:3, flagged:0,workflow:'usd'},
-    {zip:'28212',market:'Charlotte',   state:'NC',lat:35.198,lon:-80.770, count:6, flagged:3,workflow:'usd'},
-    {zip:'37203',market:'Nashville',   state:'TN',lat:36.149,lon:-86.790, count:7, flagged:2,workflow:'usd'},
-    {zip:'37206',market:'Nashville',   state:'TN',lat:36.174,lon:-86.750, count:2, flagged:0,workflow:'usd'},
-    {zip:'37211',market:'Nashville',   state:'TN',lat:36.098,lon:-86.720, count:5, flagged:1,workflow:'usd'},
-    {zip:'33602',market:'Tampa',       state:'FL',lat:27.951,lon:-82.457, count:9, flagged:1,workflow:'usd'},
-    {zip:'33606',market:'Tampa',       state:'FL',lat:27.936,lon:-82.466, count:3, flagged:0,workflow:'usd'},
-    {zip:'33612',market:'Tampa',       state:'FL',lat:28.028,lon:-82.458, count:5, flagged:2,workflow:'usd'},
-    {zip:'80202',market:'Denver',      state:'CO',lat:39.754,lon:-104.999,count:6, flagged:0,workflow:'usd'},
-    {zip:'80204',market:'Denver',      state:'CO',lat:39.734,lon:-105.021,count:4, flagged:1,workflow:'usd'},
-    {zip:'85003',market:'Phoenix',     state:'AZ',lat:33.448,lon:-112.074,count:11,flagged:4,workflow:'usd'},
-    {zip:'85006',market:'Phoenix',     state:'AZ',lat:33.453,lon:-112.045,count:7, flagged:0,workflow:'usd'},
-    {zip:'85016',market:'Phoenix',     state:'AZ',lat:33.510,lon:-112.018,count:5, flagged:2,workflow:'usd'},
-    {zip:'30308',market:'Atlanta',     state:'GA',lat:33.771,lon:-84.369, count:4, flagged:1,workflow:'usd'},
-    {zip:'30315',market:'Atlanta',     state:'GA',lat:33.710,lon:-84.372, count:6, flagged:0,workflow:'usd'},
-    {zip:'75201',market:'Dallas',      state:'TX',lat:32.777,lon:-96.797, count:8, flagged:1,workflow:'usd'},
-    {zip:'75204',market:'Dallas',      state:'TX',lat:32.801,lon:-96.787, count:5, flagged:0,workflow:'usd'},
-    {zip:'77002',market:'Houston',     state:'TX',lat:29.753,lon:-95.368, count:7, flagged:2,workflow:'usd'},
-    {zip:'77007',market:'Houston',     state:'TX',lat:29.770,lon:-95.408, count:4, flagged:0,workflow:'usd'},
-    {zip:'32801',market:'Orlando',     state:'FL',lat:28.538,lon:-81.379, count:5, flagged:0,workflow:'usd'},
-    {zip:'32806',market:'Orlando',     state:'FL',lat:28.516,lon:-81.367, count:3, flagged:1,workflow:'usd'},
-    {zip:'89101',market:'Las Vegas',   state:'NV',lat:36.170,lon:-115.140,count:9, flagged:3,workflow:'usd'},
-    {zip:'89109',market:'Las Vegas',   state:'NV',lat:36.130,lon:-115.160,count:6, flagged:0,workflow:'usd'},
-    {zip:'89119',market:'Las Vegas',   state:'NV',lat:36.089,lon:-115.142,count:4, flagged:2,workflow:'usd'},
-    {zip:'73102',market:'Oklahoma City',state:'OK',lat:35.467,lon:-97.517,count:5, flagged:1,workflow:'st'},
-    {zip:'73103',market:'Oklahoma City',state:'OK',lat:35.481,lon:-97.524,count:3, flagged:0,workflow:'st'},
-    {zip:'73109',market:'Oklahoma City',state:'OK',lat:35.433,lon:-97.530,count:7, flagged:2,workflow:'st'},
-    {zip:'64101',market:'Kansas City', state:'MO',lat:39.103,lon:-94.578, count:4, flagged:0,workflow:'st'},
-    {zip:'64108',market:'Kansas City', state:'MO',lat:39.088,lon:-94.580, count:6, flagged:1,workflow:'st'},
-    {zip:'64111',market:'Kansas City', state:'MO',lat:39.053,lon:-94.593, count:3, flagged:0,workflow:'st'},
-    {zip:'23220',market:'Richmond',    state:'VA',lat:37.553,lon:-77.468, count:5, flagged:2,workflow:'st'},
-    {zip:'23221',market:'Richmond',    state:'VA',lat:37.554,lon:-77.490, count:4, flagged:0,workflow:'st'},
-    {zip:'21201',market:'Baltimore',   state:'MD',lat:39.295,lon:-76.621, count:6, flagged:1,workflow:'st'},
-    {zip:'21202',market:'Baltimore',   state:'MD',lat:39.296,lon:-76.606, count:4, flagged:0,workflow:'st'},
-    {zip:'21215',market:'Baltimore',   state:'MD',lat:39.338,lon:-76.671, count:3, flagged:2,workflow:'st'},
-  ];
-}
-
-// ─── HELPERS ──────────────────────────────────────────────────────────────────
-function cr(count) { return Math.max(6, Math.sqrt(count) * 4.5); }
-function getTabData() { return DATA.filter(d => d.workflow === activeTab); }
-function getFiltered() {
-  return getTabData().filter(d => activeMarkets.has(d.market));
-}
-
-// ─── STATS ────────────────────────────────────────────────────────────────────
 function updateStats() {
   const f = getFiltered();
   document.getElementById('s1').textContent = f.reduce((a, d) => a + d.count, 0);
   document.getElementById('s3').textContent = new Set(f.map(d => d.market)).size;
   document.getElementById('s4').textContent = f.length;
-  document.getElementById('s1').style.color = COLORS[activeTab].statColor;
 }
 
-// ─── MAP COLORING ─────────────────────────────────────────────────────────────
-function colorStates() {
-  svg.selectAll('.state-path').attr('class', function(d) {
-    const abbr = FIPS_TO_ABBR[d.id];
-    if (USD_STATES.has(abbr)) return 'state-path state-path-usd';
-    if (ST_STATES.has(abbr)) return 'state-path state-path-st';
-    return 'state-path state-path-off';
-  });
-}
-
-// ─── RENDER TABLES ───────────────────────────────────────────────────────────
 function renderTables() {
   const f = getFiltered();
-
-  // Table 1: zip level sorted by state then zip
   const sorted = [...f].sort((a, b) => a.state.localeCompare(b.state) || a.zip.localeCompare(b.zip));
   document.getElementById('tbl-zips').innerHTML = sorted.map(d =>
     `<tr><td>${d.state}</td><td>${d.market}</td><td>${d.zip}</td></tr>`
   ).join('');
-
-  // Table 2: count of zips by state
   const byState = {};
   f.forEach(d => { byState[d.state] = (byState[d.state] || 0) + 1; });
-  const stateRows = Object.entries(byState).sort((a, b) => a[0].localeCompare(b[0]));
-  document.getElementById('tbl-states').innerHTML = stateRows.map(([state, cnt]) =>
-    `<tr><td>${state}</td><td class="num">${cnt}</td></tr>`
-  ).join('');
+  document.getElementById('tbl-states').innerHTML = Object.entries(byState)
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([s, n]) => `<tr><td>${s}</td><td class="num">${n}</td></tr>`)
+    .join('');
 }
 
-// ─── RENDER CIRCLES ───────────────────────────────────────────────────────────
 function render() {
   svg.selectAll('.zc').remove();
   tip.style.display = 'none';
   const f = getFiltered();
   f.sort((a, b) => b.count - a.count);
-  const c = COLORS[activeTab];
 
   f.forEach(d => {
     const pt = proj([d.lon, d.lat]);
     if (!pt) return;
-    const fill   = c.fill;
-    const stroke = c.stroke;
-
     svg.append('circle')
       .attr('class', 'zc')
       .attr('cx', pt[0]).attr('cy', pt[1])
       .attr('r', cr(d.count))
-      .attr('fill', fill).attr('fill-opacity', .65)
-      .attr('stroke', stroke).attr('stroke-width', 1)
+      .attr('fill', '#1D9E75').attr('fill-opacity', .65)
+      .attr('stroke', '#0F6E56').attr('stroke-width', 1)
       .style('cursor', 'pointer')
       .on('mouseover', function() {
         const rect = svgEl.getBoundingClientRect();
@@ -528,14 +198,7 @@ function render() {
         tip.style.display = 'block';
         tip.style.left = tx + 'px';
         tip.style.top  = ty + 'px';
-        tip.innerHTML = `
-          <div class="tip-zip">${d.zip}</div>
-          <div class="tip-market">${d.market}, ${d.state} &mdash; ${activeTab === 'usd' ? 'Up Sign Down' : 'Sign Traker'}</div>
-          <div class="tip-row">
-            <span class="tip-label">Pre-reno homes</span>
-            <span style="font-weight:600;color:${c.stroke}">${d.count}</span>
-          </div>
-`;
+        tip.innerHTML = `<div class="tip-zip">${d.zip}</div><div class="tip-market">${d.market}, ${d.state}</div><div class="tip-row"><span class="tip-label">Pre-reno homes</span><span style="font-weight:600;color:#0F6E56">${d.count}</span></div>`;
       })
       .on('mouseout', () => tip.style.display = 'none');
   });
@@ -543,96 +206,43 @@ function render() {
   renderTables();
 }
 
-// ─── PILLS ────────────────────────────────────────────────────────────────────
 function buildPills() {
   const el = document.getElementById('pills');
   el.innerHTML = '';
-  const c = COLORS[activeTab];
-  const markets = [...new Set(getTabData().map(d => d.market))].sort();
+  const markets = [...new Set(DATA.map(d => d.market))].sort();
   activeMarkets = new Set(markets);
-
   markets.forEach(m => {
     const pill = document.createElement('span');
-    pill.className = 'pill ' + c.pill;
+    pill.className = 'pill on';
     pill.textContent = m;
     pill.onclick = () => {
-      if (activeMarkets.has(m)) {
-        activeMarkets.delete(m);
-        pill.className = 'pill';
-      } else {
-        activeMarkets.add(m);
-        pill.className = 'pill ' + c.pill;
-      }
+      if (activeMarkets.has(m)) { activeMarkets.delete(m); pill.className = 'pill'; }
+      else { activeMarkets.add(m); pill.className = 'pill on'; }
       render();
     };
     el.appendChild(pill);
   });
 }
 
-// ─── TAB SWITCH ───────────────────────────────────────────────────────────────
-function switchTab(tab) {
-  activeTab = tab;
-  const c = COLORS[tab];
-
-  document.getElementById('tab-usd').className = 'tab-btn' + (tab === 'usd' ? ' active-usd' : '');
-  document.getElementById('tab-st').className  = 'tab-btn' + (tab === 'st'  ? ' active-st'  : '');
-
-  document.getElementById('leg-c').setAttribute('fill',   c.fill);
-  document.getElementById('leg-c').setAttribute('stroke', c.stroke);
-  document.getElementById('leg-label').textContent = tab === 'usd' ? 'Up Sign Down state' : 'Sign Traker state';
-  const titleText = tab === 'usd' ? 'Up Sign Down — Pre-Reno Sign Tracker' : 'Sign Tracker — Pre-Reno Sign Traker';
-  document.getElementById('header-title').textContent = titleText;
-  document.title = titleText;
-  document.getElementById('s1').style.color = c.statColor;
-
-  // Persist tab in URL for sharable deep links
-  const url = new URL(window.location);
-  url.searchParams.set('tab', tab);
-  window.history.replaceState({}, '', url);
-
-  colorStates();
-  buildPills();
-  render();
-}
-
-// ─── INIT ─────────────────────────────────────────────────────────────────────
 Promise.all([
   loadData(),
   d3.json('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json')
 ]).then(([_, us]) => {
   const path = d3.geoPath().projection(proj);
-
-  // State fills (colored by workflow type)
-  svg.append('g')
-    .selectAll('path')
+  svg.append('g').selectAll('path')
     .data(topojson.feature(us, us.objects.states).features)
-    .join('path')
-    .attr('class', d => {
-      const abbr = FIPS_TO_ABBR[d.id];
-      if (USD_STATES.has(abbr)) return 'state-path state-path-usd';
-      if (ST_STATES.has(abbr)) return 'state-path state-path-st';
-      return 'state-path state-path-off';
-    })
-    .attr('d', path)
-    .attr('stroke', '#d0d5dd')
-    .attr('stroke-width', 0.4);
-
-  // State borders
+    .join('path').attr('class', 'state-path').attr('d', path)
+    .attr('stroke', '#d0d5dd').attr('stroke-width', 0.4);
   svg.append('path')
     .datum(topojson.mesh(us, us.objects.states, (a, b) => a !== b))
-    .attr('d', path).attr('fill', 'none')
-    .attr('stroke', '#c4cbd6').attr('stroke-width', 0.3);
-
+    .attr('d', path).attr('fill', 'none').attr('stroke', '#c4cbd6').attr('stroke-width', 0.3);
   document.getElementById('map-loading').style.display = 'none';
   svgEl.style.display = 'block';
-
-  switchTab(activeTab);
+  buildPills();
+  render();
 }).catch(err => {
   document.getElementById('map-loading').innerHTML =
-    `<div style="color:#A32D2D;font-size:13px;text-align:center;">
-      <strong>Map failed to load</strong><br/>
-      <span style="color:#667085">${err.message}</span>
-    </div>`;
+    `<div style="color:#A32D2D;font-size:13px;text-align:center;"><strong>Map failed to load</strong><br/><span style="color:#667085">${err.message}</span></div>`;
 });
 </script>
 </body>
